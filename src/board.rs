@@ -4,6 +4,8 @@ use std::fmt;
 use std::ops::Index;
 
 #[allow(non_camel_case_types)]
+#[allow(dead_code)]
+#[derive(Copy, Clone)]
 pub enum Square {
     a8 = 0,  b8 = 1,  c8 = 2,  d8 = 3,  e8 = 4,  f8 = 5,  g8 = 6,  h8 = 7,
     a7 = 8,  b7 = 9,  c7 = 10, d7 = 11, e7 = 12, f7 = 13, g7 = 14, h7 = 15,
@@ -17,10 +19,37 @@ pub enum Square {
 
 impl fmt::Display for Square {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            _ => write!(f, "?"),
-        }
+        write!(f, "{}", to_algebraic(*self as u8))
     }
+}
+
+fn to_algebraic(pos: u8) -> String {
+
+    let rank = match pos / 8 {
+        0 => "8",
+        1 => "7",
+        2 => "6",
+        3 => "5",
+        4 => "4",
+        5 => "3",
+        6 => "2",
+        7 => "1",
+        _ => "",
+    };
+
+    let file = match pos % 8 {
+        0 => "a",
+        1 => "b",
+        2 => "c",
+        3 => "d",
+        4 => "e",
+        5 => "f",
+        6 => "g",
+        7 => "h",
+        _ => "",
+    };
+
+    String::from(file) + rank
 }
 
 #[derive(Clone, Copy)]
@@ -66,8 +95,8 @@ pub struct Board {
     black_kingside_castle_available: bool,
     black_queenside_castle_available: bool,
     ep_target_square: Option<Square>,
-    half_move_clock: u8,
-    full_move_number: u8,
+    half_move_clock: u16,
+    full_move_number: u16,
 }
 
 impl fmt::Display for Board {
@@ -197,35 +226,6 @@ pub fn from_fen(_fen: &String) -> Board {
     }
 
     Board::from_starting_position()
-}
-
-fn to_algebraic(pos: u8) -> String {
-
-    let rank = match pos / 8 {
-        0 => "8",
-        1 => "7",
-        2 => "6",
-        3 => "5",
-        4 => "4",
-        5 => "3",
-        6 => "2",
-        7 => "1",
-        _ => "",
-    };
-
-    let file = match pos % 8 {
-        0 => "a",
-        1 => "b",
-        2 => "c",
-        3 => "d",
-        4 => "e",
-        5 => "f",
-        6 => "g",
-        7 => "h",
-        _ => "",
-    };
-
-    String::from(file) + rank
 }
 
 }
